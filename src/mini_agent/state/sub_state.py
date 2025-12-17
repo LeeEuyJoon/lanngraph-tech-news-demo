@@ -16,7 +16,7 @@ class RawEvent(TypedDict):
     payload: Any  # rss xml str / github json / search json
 
 
-class NormalizedEvent(TypedDict, total=False):
+class NormalizedEvent(TypedDict, total=True):
     source: SourceType
     title: str
     url: str
