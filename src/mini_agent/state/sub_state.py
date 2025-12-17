@@ -1,13 +1,11 @@
-from typing import Any, List, TypedDict
+from typing import Any, Dict, TypedDict
 
 from ..types import SourceType
 
 
-class CollectionPlanItem(TypedDict, total=False):
-    source: SourceType
-    rss_urls: List[str]
-    github_repos: List[str]
-    web_search_queries: List[str]
+class CollectionPlanItem(TypedDict):
+    source: str
+    config: Dict[str, Any]
 
 
 class RawEvent(TypedDict):
@@ -16,7 +14,7 @@ class RawEvent(TypedDict):
     payload: Any  # rss xml str / github json / search json
 
 
-class NormalizedEvent(TypedDict, total=True):
+class NormalizedEvent(TypedDict, total=False):
     source: SourceType
     title: str
     url: str
