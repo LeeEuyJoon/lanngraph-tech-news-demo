@@ -9,7 +9,7 @@ class CollectionPlanItem(TypedDict):
 
 
 class RawEvent(TypedDict):
-    source: SourceType
+    source: str
     fetched_at: str  # ISO
     payload: Any  # rss xml str / github json / search json
 

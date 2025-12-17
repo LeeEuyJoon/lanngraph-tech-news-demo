@@ -6,3 +6,7 @@ python-dotenv>=1.0.0
 pydantic>=2.0.0
 tavily-python>=0.5.0
 pytest
+feedparser
+types-feedparser
+requests
+tavily
