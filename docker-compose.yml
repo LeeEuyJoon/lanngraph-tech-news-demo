@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  tech-news-agent:
+    build: .
+    container_name: tech-news-agent
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+    environment:
+      - PYTHONUNBUFFERED=1
+    stdin_open: true
+    tty: true
