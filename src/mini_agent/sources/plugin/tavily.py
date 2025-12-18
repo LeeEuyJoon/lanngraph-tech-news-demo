@@ -38,7 +38,8 @@ class TavilySource:
             max_results=5,
             search_depth="basic",
             include_answer=True,
-            include_raw_content=False,
+            include_raw_content=True,
+            days=15,
         )
 
         fetched_at = datetime.now(timezone.utc).isoformat()
