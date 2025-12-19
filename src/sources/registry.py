@@ -1,8 +1,8 @@
 from typing import Dict, Iterable, List, Optional, Protocol, Union
 
-from mini_agent import Tech
-from mini_agent.state.sub_state import RawEvent
-from mini_agent.types import SourceType
+from src import Tech
+from src.state.sub_state import RawEvent
+from src.domain import SourceType
 
 
 class SourcePlugin(Protocol):

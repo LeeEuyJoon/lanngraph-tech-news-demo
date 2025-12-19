@@ -3,10 +3,10 @@ from typing import List
 
 import feedparser  # type: ignore
 
-from mini_agent import Tech
-from mini_agent.sources import get_sources
-from mini_agent.state.sub_state import RawEvent
-from mini_agent.types import SourceType
+from src import Tech
+from src.sources import get_sources
+from src.state.sub_state import RawEvent
+from src.domain import SourceType
 
 
 class RssSource:

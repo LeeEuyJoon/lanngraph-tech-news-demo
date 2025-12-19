@@ -4,9 +4,9 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 
-from mini_agent import Tech
-from mini_agent.sources.plugin.github_releases import GithubReleasesSource
-from mini_agent.types import SourceType
+from src import Tech
+from src.sources.plugin.github_releases import GithubReleasesSource
+from src.domain import SourceType
 
 load_dotenv()
 

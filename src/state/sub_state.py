@@ -1,6 +1,6 @@
 from typing import Any, Dict, TypedDict
 
-from ..types import SourceType
+from ..domain import SourceType
 
 
 class CollectionPlanItem(TypedDict):

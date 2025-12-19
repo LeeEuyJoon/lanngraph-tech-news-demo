@@ -4,9 +4,9 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 
-from mini_agent import Tech
-from mini_agent.sources.plugin.rss import RssSource
-from mini_agent.types import SourceType
+from src import Tech
+from src.sources.plugin.rss import RssSource
+from src.domain import SourceType
 
 load_dotenv()
 

@@ -4,9 +4,9 @@ from typing import List
 
 from tavily import TavilyClient  # type: ignore
 
-from mini_agent import Tech
-from mini_agent.state.sub_state import RawEvent
-from mini_agent.types import SourceType
+from src import Tech
+from src.state.sub_state import RawEvent
+from src.domain import SourceType
 
 
 class TavilySource:

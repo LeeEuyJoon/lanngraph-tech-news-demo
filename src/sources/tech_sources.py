@@ -1,6 +1,6 @@
 """기술별 GitHub Releases 및 RSS Feed 소스 정보"""
 
-from ..types import SourceType
+from ..domain import SourceType
 from .tech_list import Tech
 
 TECH_SOURCES = {

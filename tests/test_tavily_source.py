@@ -6,9 +6,9 @@ from datetime import datetime
 import pytest
 from dotenv import load_dotenv
 
-from mini_agent import Tech
-from mini_agent.sources.plugin.tavily import TavilySource
-from mini_agent.types import SourceType
+from src import Tech
+from src.sources.plugin.tavily import TavilySource
+from src.domain import SourceType
 
 load_dotenv()
 
