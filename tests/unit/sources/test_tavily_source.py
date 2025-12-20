@@ -7,14 +7,17 @@ import pytest
 from dotenv import load_dotenv
 
 from src import Tech
-from src.sources.plugin.tavily import TavilySource
 from src.domain import SourceType
+from src.sources.plugin.tavily import TavilySource
 
 load_dotenv()
 
 
 def test_tavily_search_spring():
-    """Spring 관련 뉴스 검색 테스트"""
+    """Spring 관련 뉴스 검색 테스트
+
+    pytest tests/unit/sources/test_tavily_source.py -s -v
+    """
     api_key = os.getenv("TAVILY_API_KEY")
     if not api_key:
         pytest.skip("TAVILY_API_KEY가 설정되지 않았습니다")

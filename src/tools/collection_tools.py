@@ -1,5 +1,3 @@
-"""데이터 수집을 위한 도구들"""
-
 from typing import List
 
 from langchain_core.tools import tool

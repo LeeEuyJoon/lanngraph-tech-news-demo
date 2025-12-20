@@ -5,14 +5,17 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 from src import Tech
-from src.sources.plugin.rss import RssSource
 from src.domain import SourceType
+from src.sources.plugin.rss import RssSource
 
 load_dotenv()
 
 
 def test_rss_source_fetch_spring():
-    """Spring RSS 피드 가져오기 테스트"""
+    """Spring RSS 피드 가져오기 테스트
+
+    pytest tests/unit/sources/test_rss_source.py -s -v
+    """
     source = RssSource()
     today = datetime.now().strftime("%Y-%m-%d")
 
@@ -34,7 +37,7 @@ def test_rss_source_fetch_spring():
     assert "feed" in payload
     assert "entries" in payload
 
-    print(f"\n✅ RSS 피드 가져오기 성공: {len(result)}개 URL에서 데이터 수집")
+    print(f"\n{len(result)}개 URL에서 데이터 수집")
     print(f"첫 번째 URL: {payload['url']}")
     print(f"엔트리 개수: {len(payload.get('entries', []))}")
 
@@ -49,7 +52,7 @@ def test_rss_source_fetch_nextjs():
     assert isinstance(result, list)
     assert len(result) > 0
 
-    print(f"\n✅ Next.js RSS 피드 가져오기 성공: {len(result)}개 URL")
+    print(f"\n{len(result)}개 URL")
 
 
 def test_rss_source_no_feeds():
@@ -63,7 +66,7 @@ def test_rss_source_no_feeds():
     assert isinstance(result, list)
     assert len(result) == 0
 
-    print("\n✅ RSS 피드가 없는 경우 빈 리스트 반환 확인")
+    print("\nRSS 피드가 없는 경우 빈 리스트 반환 확인")
 
 
 def test_rss_source_payload_structure():

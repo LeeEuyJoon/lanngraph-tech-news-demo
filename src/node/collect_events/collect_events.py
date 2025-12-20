@@ -1,7 +1,3 @@
-"""
-Collect Events Node - Raw 데이터 수집 노드 (ReAct 패턴)
-"""
-
 from typing import List
 
 from langchain_openai import ChatOpenAI

@@ -5,14 +5,17 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 from src import Tech
-from src.sources.plugin.github_releases import GithubReleasesSource
 from src.domain import SourceType
+from src.sources.plugin.github_releases import GithubReleasesSource
 
 load_dotenv()
 
 
 def test_github_releases_fetch_spring():
-    """Spring GitHub Releases 가져오기 테스트"""
+    """Spring GitHub Releases 가져오기 테스트
+
+    pytest tests/unit/sources/test_github_releases_source.py -s -v
+    """
     source = GithubReleasesSource()
     today = datetime.now().strftime("%Y-%m-%d")
 
