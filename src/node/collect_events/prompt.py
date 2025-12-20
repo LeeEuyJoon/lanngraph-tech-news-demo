@@ -3,7 +3,7 @@
 from src import Tech
 
 
-def get_collection_prompt(tech: Tech, today: str) -> str:
+def get_system_prompt(tech: Tech, today: str) -> str:
     return f"""당신은 {tech.value}에 대한 기술 뉴스를 수집하는 데이터 수집 에이전트입니다.
 
             여러 소스에서 원시 이벤트를 수집하는 것이 당신의 임무입니다:
@@ -20,3 +20,7 @@ def get_collection_prompt(tech: Tech, today: str) -> str:
             오늘 날짜: {today}
 
             지금 데이터 수집을 시작하세요!"""
+
+
+def get_user_prompt() -> str:
+    return """다양한 소스에서 기술 뉴스를 수집하세요. 각 도구를 사용하여 최신 정보를 얻고, 충분한 데이터를 수집했을 때 finish_collection을 호출하세요."""

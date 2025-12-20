@@ -1,14 +1,16 @@
 from typing import List
 
+# from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
-from langgraph.prebuilt import create_react_agent
+from langgraph.graph.state import CompiledStateGraph
 
 from src.sources.registry import SourceRegistry
 from src.state.state import GraphState
 from src.state.sub_state import RawEvent
 from src.tools import make_collection_tools
 
-from .prompt import get_collection_prompt
+from .prompt import get_system_prompt, get_user_prompt
 
 
 def make_collect_events_node(registry: SourceRegistry):
@@ -46,20 +48,17 @@ def make_collect_events_node(registry: SourceRegistry):
             collected_events=collected_events,
         )
 
-        # LLM 초기화
-        llm = ChatOpenAI(
-            model="gpt-4o-mini",
-            temperature=0,
-        )
+        model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
         # ReAct 에이전트 생성
-        agent_executor = create_react_agent(llm, tools)
-
-        # 프롬프트 생성
-        prompt = get_collection_prompt(tech, today)
+        agent: CompiledStateGraph = create_agent(
+            model=model,
+            tools=tools,
+            system_prompt=get_system_prompt(tech, today),
+        )
 
         # 에이전트 실행
-        agent_executor.invoke({"messages": [("user", prompt)]})
+        agent.invoke({"messages": [{"role": "user", "content": get_user_prompt()}]})
 
         print(f"\n📊 총 {len(collected_events)}개 RawEvent 수집 완료")
 
