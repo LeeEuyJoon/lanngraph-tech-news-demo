@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 from langchain_core.tools import tool
@@ -6,6 +7,8 @@ from src import Tech
 from src.domain import SourceType
 from src.sources.registry import SourceRegistry
 from src.state.sub_state import RawEvent
+
+logger = logging.getLogger(__name__)
 
 
 def make_collection_tools(
@@ -31,6 +34,7 @@ def make_collection_tools(
     def fetch_rss() -> str:
         """RSS 피드를 가져와서 최신 기술 뉴스를 수집"""
         try:
+            logger.info("[Tool] fetch_rss")
             events = registry.fetch(source=SourceType.RSS, tech=tech, today=today)
             collected_events.extend(events)
             return f"✅ Successfully fetched {len(events)} RSS feed events"
@@ -41,6 +45,7 @@ def make_collection_tools(
     def fetch_github_releases() -> str:
         """GitHub 릴리스를 가져와서 최신 버전 릴리스와 체인지로그를 수집"""
         try:
+            logger.info("[Tool] fetch_github_releases")
             events = registry.fetch(
                 source=SourceType.GITHUB_RELEASES, tech=tech, today=today
             )
@@ -57,6 +62,7 @@ def make_collection_tools(
             query: 검색 쿼리 (최근 뉴스등의 소식을 얻기 위한)
         """
         try:
+            logger.info("[Tool] search_tavily")
             events = registry.search(
                 source=SourceType.TAVILY, tech=tech, today=today, query=query
             )
@@ -72,6 +78,7 @@ def make_collection_tools(
         Args:
             reason: 수집이 완료된 이유에 대한 설명
         """
+        logger.info("[Tool] finish_collection")
         return f"✅ Collection finished: {reason}. Total events collected: {len(collected_events)}"
 
     return [fetch_rss, fetch_github_releases, search_tavily, finish_collection]

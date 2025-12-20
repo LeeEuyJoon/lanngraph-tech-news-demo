@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 # from langgraph.prebuilt import create_react_agent
@@ -9,8 +10,11 @@ from src.sources.registry import SourceRegistry
 from src.state.state import GraphState
 from src.state.sub_state import RawEvent
 from src.tools import make_collection_tools
+from src.utils.logging import log_node_execution
 
 from .prompt import get_system_prompt, get_user_prompt
+
+logger = logging.getLogger(__name__)
 
 
 def make_collect_events_node(registry: SourceRegistry):
@@ -24,6 +28,7 @@ def make_collect_events_node(registry: SourceRegistry):
         collect_events 노드 함수
     """
 
+    @log_node_execution
     def collect_events(state: GraphState) -> GraphState:
         """
         이벤트 수집 노드 (ReAct 패턴 사용)
@@ -34,8 +39,7 @@ def make_collect_events_node(registry: SourceRegistry):
         tech = state["tech"]
         today = state["today"]
 
-        print(f"\n📡 데이터 수집 시작 (ReAct): {tech.value}")
-        print(f"📅 날짜: {today}")
+        logger.info(f"[collect_events] 데이터 수집 시작: {tech.value}")
 
         # 수집된 raw events를 저장할 리스트
         collected_events: List[RawEvent] = []
@@ -60,7 +64,16 @@ def make_collect_events_node(registry: SourceRegistry):
         # 에이전트 실행
         agent.invoke({"messages": [{"role": "user", "content": get_user_prompt()}]})
 
-        print(f"\n📊 총 {len(collected_events)}개 RawEvent 수집 완료")
+        logger.info(
+            f"[collect_events] 데이터 수집 완료: {len(collected_events)}개 이벤트 수집됨"
+        )
+
+        # 수집된 이벤트 반환
+        for event in collected_events:
+            playlaod_preview = str(event["payload"])[:50]
+            logger.info(
+                f"[collect_events] 수집된 이벤트: {event['source']}: {playlaod_preview}..."
+            )
 
         return GraphState(raw_events=collected_events)
 
