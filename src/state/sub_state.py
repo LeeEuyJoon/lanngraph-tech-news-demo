@@ -19,9 +19,9 @@ class NormalizedEvent(TypedDict, total=False):
     title: str
     url: str
     published_at: str  # ISO
-    content: str  # plain text or html
+    content: str
 
 
 class Evaluation(TypedDict, total=False):
-    pass_: bool  # `pass`는 키워드라 pass_ 추천
+    pass_: bool
     feedback: str
