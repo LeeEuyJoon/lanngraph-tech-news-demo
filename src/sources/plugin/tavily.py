@@ -5,8 +5,8 @@ from typing import List
 from tavily import TavilyClient  # type: ignore
 
 from src import Tech
-from src.state.sub_state import RawEvent
 from src.domain import SourceType
+from src.state.sub_state import RawEvent
 
 
 class TavilySource:
@@ -37,12 +37,22 @@ class TavilySource:
             query=query,
             max_results=5,
             search_depth="basic",
-            include_answer=True,
-            include_raw_content=True,
+            include_answer=False,
+            include_raw_content=False,
             days=15,
         )
 
         fetched_at = datetime.now(timezone.utc).isoformat()
+
+        simplified_results = [
+            {
+                "title": result.get("title", ""),
+                "url": result.get("url", ""),
+                "content": result.get("content", ""),
+                "published_date": result.get("published_date", ""),
+            }
+            for result in results.get("results", [])
+        ]
 
         return [
             RawEvent(
@@ -50,7 +60,7 @@ class TavilySource:
                 fetched_at=fetched_at,
                 payload={
                     "query": query,
-                    "results": results,
+                    "results": simplified_results,
                 },
             )
         ]

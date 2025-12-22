@@ -11,24 +11,24 @@ def get_system_prompt() -> str:
             원시 이벤트들은 서로 다른 형식과 구조를 가지고 있으며, 이를 통일된 형식으로 변환하는 것이 당신의 임무입니다.
 
             각 이벤트는 다음과 같은 통일된 형식(NormalizedEvent)으로 변환되어야 합니다:
-            - source: 이벤트 출처 (RSS, GITHUB_RELEASE, TAVILY 중 하나)
-            - title: 이벤트 제목 (명확하고 간결하게)
+            - source: 이벤트 출처 (RSS, GITHUB_RELEASES, TAVILY 중 하나)
+            - title: 이벤트 제목 (원본 제목 그대로)
             - url: 이벤트 링크 (원본 소스 URL)
             - published_at: 발행 날짜 (ISO 8601 형식: YYYY-MM-DD)
-            - content: 이벤트 내용 요약 (주요 정보를 포함한 간략한 설명, 200자 이내)
+            - content: 이벤트 내용 (원본 내용 전체, HTML 태그만 제거)
 
             가이드라인:
-            1. **제목(title)**: 명확하고 간결하게, 핵심 정보를 포함
+            1. **제목(title)**: 원본 제목을 그대로 사용
             2. **URL**: 유효한 원본 링크, 없으면 빈 문자열
-            3. **발행일(published_at)**: 정확한 날짜, 없으면 오늘 날짜 사용
-            4. **내용(content)**: 중요한 변경사항, 주요 기능, 핵심 내용을 정리
+            3. **발행일(published_at)**: 정확한 날짜를 ISO 형식(YYYY-MM-DD)으로 변환, 없으면 오늘 날짜 사용
+            4. **내용(content)**: 원본 내용을 최대한 보존, 요약하지 말고 전체 내용 포함, HTML 태그만 제거
 
-            소스별 특징:
-            - **RSS**: 블로그 포스트, 기사 등 - title, link, description, pubDate 등의 필드 포함
-            - **GITHUB_RELEASE**: 릴리스 정보 - tag_name, name, body, published_at 등의 필드 포함
-            - **TAVILY**: 웹 검색 결과 - title, url, content, published_date 등의 필드 포함
+            소스별 매핑:
+            - **RSS**: content 또는 summary 필드 → content (전체 내용)
+            - **GITHUB_RELEASES**: body 필드 → content (전체 내용)
+            - **TAVILY**: content 필드 → content (AI 추출 요약, 그대로 사용)
 
-            정규화 작업을 시작하세요!"""
+            중요: 내용을 요약하거나 축약하지 마세요. 원본 정보를 최대한 보존하세요!"""
 
 
 def get_user_prompt(raw_events: List[RawEvent]) -> str:
@@ -44,5 +44,5 @@ def get_user_prompt(raw_events: List[RawEvent]) -> str:
 
             {events_text}
 
-            각 이벤트를 NormalizedEvent 형식으로 변환하여 JSON 배열로 반환하세요.
+            각 이벤트를 NormalizedEvents 형식으로 변환하여 JSON 배열로 반환하세요.
             모든 이벤트가 정확하게 변환되도록 주의하세요."""

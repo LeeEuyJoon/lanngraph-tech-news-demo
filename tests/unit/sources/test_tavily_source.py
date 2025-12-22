@@ -50,17 +50,17 @@ def test_tavily_search_spring():
     print(f"쿼리: {payload['query']}")
     print(f"결과 타입: {type(results)}")
 
-    # Tavily 결과 구조 확인
-    if isinstance(results, dict):
-        if "results" in results:
-            search_results = results["results"]
-            print(f"검색 결과 개수: {len(search_results)}")
-            if search_results:
-                first_result = search_results[0]
-                print("\n🔍 첫 번째 검색 결과:")
-                print(f"  - Title: {first_result.get('title', 'N/A')}")
-                print(f"  - URL: {first_result.get('url', 'N/A')}")
-                print(f"  - Content: {first_result.get('content', 'N/A')[:100]}...")
+    # results는 리스트
+    assert isinstance(results, list), "results가 리스트여야 합니다"
+    print(f"검색 결과 개수: {len(results)}")
+
+    if results:
+        first_result = results[0]
+        print("\n🔍 첫 번째 검색 결과:")
+        print(f"  - Title: {first_result.get('title', 'N/A')}")
+        print(f"  - URL: {first_result.get('url', 'N/A')}")
+        print(f"  - Content: {first_result.get('content', 'N/A')[:100]}...")
+        print(f"  - Published: {first_result.get('published_date', 'N/A')}")
 
 
 def test_tavily_search_different_queries():
@@ -108,33 +108,32 @@ def test_tavily_payload_structure():
     print(f"  - Query: {payload['query']}")
     print(f"  - Results type: {type(results)}")
 
-    if isinstance(results, dict):
-        print(f"  - Keys: {list(results.keys())}")
+    # results는 리스트
+    assert isinstance(results, list), "results는 리스트여야 합니다"
+    print(f"\n📄 검색 결과: {len(results)}개")
 
-        # Answer 확인 (include_answer=True로 요청)
-        if "answer" in results:
-            print("\n💡 AI Answer:")
-            print(f"  {results['answer'][:200]}...")
+    for i, search_result in enumerate(results[:3], 1):
+        print(f"\n  [{i}] {search_result.get('title', 'N/A')}")
+        print(f"      URL: {search_result.get('url', 'N/A')}")
+        print(f"      Published: {search_result.get('published_date', 'N/A')}")
 
-        # Search results 확인
-        if "results" in results:
-            search_results = results["results"]
-            print(f"\n📄 검색 결과: {len(search_results)}개")
+        # 필수 필드만 있는지 확인
+        print(f"      📋 사용 가능한 키: {list(search_result.keys())}")
 
-            for i, result in enumerate(search_results[:3], 1):
-                print(f"\n  [{i}] {result.get('title', 'N/A')}")
-                print(f"      URL: {result.get('url', 'N/A')}")
-                print(f"      Score: {result.get('score', 'N/A')}")
+        # 필수 필드 검증
+        assert "title" in search_result
+        assert "url" in search_result
+        assert "content" in search_result
+        assert "published_date" in search_result
 
-                # 각 검색 결과의 모든 키 확인
-                print(f"      📋 사용 가능한 키: {list(result.keys())}")
+        # Content 확인 (AI가 추출한 요약)
+        content = search_result.get("content", "")
+        if content:
+            print("      📄 Content (AI 추출 요약):")
+            print(f"          {content[:200]}...")
 
-                # Content 확인 (URL의 내용 요약)
-                content = result.get("content", "")
-                if content:
-                    print("      📄 Content (내용 요약):")
-                    print(f"          {content[:200]}...")
-                raw_content = result.get("raw_content", "")
-                if raw_content:
-                    print("      📝 Raw Content (원문 일부):")
-                    print(f"          {raw_content[:200]}...")
+        # 불필요한 필드가 제거되었는지 확인
+        assert "score" not in search_result, "score는 제거되어야 합니다"
+        assert "raw_content" not in search_result, "raw_content는 제거되어야 합니다"
+
+    print("\n✅ 검증 완료: 필수 필드만 포함, 불필요한 필드 제거됨")

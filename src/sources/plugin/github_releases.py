@@ -5,9 +5,9 @@ from typing import List, Optional
 import requests  # type: ignore
 
 from src import Tech
+from src.domain import SourceType
 from src.sources import get_sources
 from src.state.sub_state import RawEvent
-from src.domain import SourceType
 
 
 class GithubReleasesSource:
@@ -52,11 +52,25 @@ class GithubReleasesSource:
                 )
                 continue
 
+            # 필요한 필드만 추출하여 payload 크기 최소화
+            releases = r.json()
+            simplified_releases = [
+                {
+                    "tag_name": rel.get("tag_name"),
+                    "name": rel.get("name"),
+                    "html_url": rel.get("html_url"),
+                    "published_at": rel.get("published_at"),
+                    "prerelease": rel.get("prerelease", False),
+                    "body": rel.get("body", ""),
+                }
+                for rel in releases
+            ]
+
             out.append(
                 RawEvent(
                     source=self.key,
                     fetched_at=fetched_at,
-                    payload={"repo": repo, "releases": r.json()},
+                    payload={"repo": repo, "releases": simplified_releases},
                 )
             )
 

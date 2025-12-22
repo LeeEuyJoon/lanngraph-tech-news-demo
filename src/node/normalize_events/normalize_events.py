@@ -1,9 +1,10 @@
 import logging
-from typing import List
+from typing import List, cast
 
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 
+from src.state.schemas import NormalizedEvents
 from src.state.state import GraphState
 from src.state.sub_state import NormalizedEvent
 
@@ -20,24 +21,29 @@ def normalize_events(state: GraphState) -> GraphState:
     """
 
     raw_events = state["raw_events"]
-    normalized_events: List[NormalizedEvent] = []
 
     model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
     agent = create_agent(
-        model=model, response_format=NormalizedEvent, system_prompt=get_system_prompt()
+        model=model, response_format=NormalizedEvents, system_prompt=get_system_prompt()
     )
 
-    agent.invoke(
+    result = agent.invoke(
         {
             "messages": [
-                {"role": "system", "content": get_user_prompt(raw_events=raw_events)}
+                {"role": "user", "content": get_user_prompt(raw_events=raw_events)}
             ]
         }
     )
 
-    logger.info(
-        f"[normalize_events] 정규화 완료: {len(normalized_events)}개의 이벤트 생성됨"
-    )
+    structured = result.get("structured_response")
+    if not structured:
+        logger.error("[normalize_events] 정규화 실패: 구조화된 응답이 없습니다")
+        return GraphState(events=[])
 
-    return GraphState(events=normalized_events)
+    structured = cast(NormalizedEvents, structured)
+    events: List[NormalizedEvent] = structured.get("events", [])
+
+    logger.info(f"[normalize_events] 정규화 완료: {len(events)}개의 이벤트 생성됨")
+
+    return GraphState(events=events)
